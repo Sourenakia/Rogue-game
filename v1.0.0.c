@@ -24,11 +24,20 @@ typedef struct{
 }pix;
 
 pix cell;
-
+int M = 0;
 
 int Login();
 int thealthy = 0, tspeed = 0, tdamage = 0;
 int tir = 0, gorz = 0, khanjar = 0, asa = 0, shamshir = 0, food = 0; 
+
+int ghadr(int x, int y){
+    int a = x - y;
+    if (a < 0){
+        a = a * -1;
+    }
+    return a;
+}
+
 
 int Random_number(int a, int b){
     int randomnumber = rand();
@@ -51,7 +60,32 @@ void update_screen(int k){
 		}
 	}
 }
+//------------------------------------------sehat---------------------------------------
+
+int sehat(int y1, int x1, int y2, int x2, int k){
+    if(y1 > y2){
+        int temp = y2;
+        y2 = y1;
+        y1 = temp;
+    }
+    if(x1 > x2){
+        int temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+    for (int j = y1; j < y2; j++){
+        for (int i = x1; i < x2; i++){
+            if (cell.pixel[k][j + 1][i].previous != '#' || cell.pixel[k][j][i - 1].previous != '#' ||
+                cell.pixel[k][j - 1][i].previous != '#' || cell.pixel[k][j][i + 1].previous != '#'){
+                    return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 //------------------------------------------show----------------------------------------
+
 int mahdood_room(int y, int x, int k){
     int m1 = y, n1 = x, m2 = y, n2 = x;
     for(int j = y; j < 37; j++){
@@ -90,6 +124,23 @@ int mahdood_room(int y, int x, int k){
     move(37, 152);
 }
 
+//----------------------------------------------------rahroh--------------------------
+int Rahroh_mahdood(int y, int x, int k){
+    if(cell.pixel[k][y][x].previous == '#' || cell.pixel[k][y][x].previous == '+'){
+        for(int j = y - 5; j <= y + 5; j++){
+            for(int i = x - 5; i <= x + 5; i++){
+                if(cell.pixel[k][j][i].previous == '#' || cell.pixel[k][j][i].previous == '+'){
+                    if(ghadr(i + j, x + y) < 6){
+                        if(sehat(y, x, j, i, k)){
+                            mvprintw(j, i, "%c", cell.pixel[k][j][i].font);
+                            move(37, 152);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 //-------------------------------------------KEY----------------------------------------
 
 int key(int y, int x, char c, int k){
@@ -339,7 +390,7 @@ int key(int y, int x, char c, int k){
         }
     }
     move(37, 152);
-    
+    Rahroh_mahdood(y, x, k);
     c = getch();
     move(37, 152);
     if(cell.pixel[k][y][x].previous == '^'){
@@ -573,6 +624,7 @@ int jadval(int ax, int bx, int ay, int by, int k){
         }
         p = p1 + p2 + p3 + p4;
     } while (p != 3 && p != 4);
+    /*/
     int randomm = Random_number(0 , 10) / 10;
     if(randomm){
         int mx1 = Random_number(ax + 1, bx - 1);
@@ -605,6 +657,7 @@ int jadval(int ax, int bx, int ay, int by, int k){
             }
         }
     }
+    /*/
     for(int i = ax + 1; i < bx; i++){
 		for(int j = ay + 1; j < by; j++){
 			int randomg = Random_number(0, 39) / 39;

@@ -1,1 +1,1 @@
-# Rogue-game
+# Rogue-game : my first project!
